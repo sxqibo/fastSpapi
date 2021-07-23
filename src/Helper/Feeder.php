@@ -9,8 +9,9 @@ use Sxqibo\FastSpapi\Api\Feeds;
 use Sxqibo\FastSpapi\ContentType;
 use Sxqibo\FastSpapi\FeedType;
 use think\facade\Log;
+use Spatie\ArrayToXml\ArrayToXml;
 
-class FeedService
+class Feeder
 {
     const SIGNATURE_VERSION = '2';
     const DATE_FORMAT       = "Y-m-d\TH:i:s.\\0\\0\\0\\Z";
@@ -21,14 +22,8 @@ class FeedService
 
     public function __construct($cred, $configInfo)
     {
-        $this->client = new Feeds($cred, $configInfo);
-
-        $marketplaceIds = $configInfo['marketplaceIds'];
-        if (!is_array($marketplaceIds)) {
-            $marketplaceIds = [$marketplaceIds];
-        }
-
-        $this->marketplaceIds = $marketplaceIds;
+        $this->client     = new Feeds($cred, $configInfo);
+        $this->configInfo = $configInfo;
     }
 
     /**
@@ -61,10 +56,11 @@ class FeedService
             $csv->insertOne(array_values($product->toArray()));
         }
 
-        $feedeType         = FeedType::POST_FLAT_FILE_LISTINGS_DATA['name'];
-        $this->contentType = $feedeType['contentType'];
 
-        return $this->submitFeed($feedeType, $csv);
+        $feedeTypeInfo     = FeedType::POST_FLAT_FILE_LISTINGS_DATA;
+        $this->contentType = $feedeTypeInfo['contentType'];
+
+        return $this->submitFeed($feedeTypeInfo['name'], $csv);
     }
 
     /**
@@ -303,9 +299,18 @@ class FeedService
      */
     protected function submitFeed($feedType, $feedContent)
     {
-        $feedDocument = $this->client->createFeedDocument(["contentType" => $this->contentType]);
+        if (is_array($feedContent)) {
+            $feedContent = $this->arrayToXml(
+                array_merge([
+                    'Header' => [
+                        'DocumentVersion'    => 1.01,
+                        'MerchantIdentifier' => $this->configInfo['seller_id']
+                    ]
+                ], $feedContent)
+            );
+        }
 
-        Log::info('feed-document' . json_encode($feedDocument));
+        $feedDocument = $this->client->createFeedDocument(["contentType" => $this->contentType]);
 
         $feedDocumentId = $feedDocument['feedDocumentId'];
         $result         = (new Document())->uploadFeedDocument($feedDocument, $this->contentType, $feedContent);
@@ -315,14 +320,30 @@ class FeedService
         }
 
         // create feed
+        $marketplaceIds = $this->configInfo['marketplaceIds'];
+        if (!is_array($marketplaceIds)) {
+            $marketplaceIds = [$marketplaceIds];
+        }
+
         $createFeedParams = [
             "feedType"            => $feedType,
-            "marketplaceIds"      => $this->marketplaceIds,
+            "marketplaceIds"      => $marketplaceIds,
             "inputFeedDocumentId" => $feedDocumentId
         ];
 
-        $feed             = $this->client->createFeed($createFeedParams);
+        $feed = $this->client->createFeed($createFeedParams);
 
         return $feed;
+    }
+
+    /**
+     * Convert an array to xml
+     * @param $array array to convert
+     * @param string $customRoot [$customRoot = 'AmazonEnvelope']
+     * @return string
+     */
+    protected function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
+    {
+        return ArrayToXml::convert($array, $customRoot, true, 'UTF-8');
     }
 }

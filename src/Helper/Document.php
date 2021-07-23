@@ -48,6 +48,24 @@ class Document
     }
 
     /**
+     * @param $payload : Response from getFeedDocument Function. e.g.: response['payload']
+     * @return array : Feed Processing Report.
+     */
+    public function downloadFeedProcessingReport($payload, $type = 'xml')
+    {
+        $feedDownloadUrl = $payload['url'];
+        $downData        = file_get_contents($feedDownloadUrl);
+
+        if ($type == 'xml') {
+            $xml  = simplexml_load_string($downData);
+            $json = json_encode($xml);
+            $downData = json_decode($json, true);
+        }
+
+        return $downData;
+    }
+
+    /**
      * @param $payload : Response from createFeedDocument Function. e.g.: response['payload']
      * @param $contentType : Content type used during createFeedDocument function call.
      * @param $feedContentFilePath : Path to file that contain data to be uploaded.
@@ -111,7 +129,7 @@ class Document
      * @param $payload : Response from getFeedDocument Function. e.g.: response['payload']
      * @return array : Feed Processing Report.
      */
-    public function downloadFeedProcessingReport($payload)
+    public function downloadFeedProcessingReportV1($payload)
     {
         $encryptionDetails = $payload['encryptionDetails'];
         $feedDownloadUrl   = $payload['url'];

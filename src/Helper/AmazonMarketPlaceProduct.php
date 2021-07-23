@@ -1,6 +1,6 @@
 <?php
 
-namespace app\services\spapi;
+namespace Sxqibo\FastSpapi\Helper;
 
 class AmazonMarketPlaceProduct
 {
