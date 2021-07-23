@@ -1,0 +1,28 @@
+{
+  "name": "sxqibo/fast-spapi",
+  "description": "亚马逊SP-API客户端",
+  "type": "library",
+  "keywords": [
+    "spapi",
+    "sp-api"
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Sxqibo\\FastSpapi\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "weifeng",
+      "email": "50098161@qq.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/psr7": "^1.7",
+    "ext-simplexml": "*",
+    "ext-json": "*",
+    "ext-zlib": "*",
+    "league/csv": "^9.7"
+  }
+}
