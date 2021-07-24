@@ -90,10 +90,10 @@ class Feeder
             $csv->insertOne(array_values($product));
         }
 
-        $feedeType         = FeedType::POST_FLAT_FILE_LISTINGS_DATA['name'];
-        $this->contentType = $feedeType['contentType'];
+        $feedTypeInfo      = FeedType::POST_FLAT_FILE_LISTINGS_DATA;
+        $this->contentType = $feedTypeInfo['contentType'];
 
-        return $this->submitFeed($feedeType, $csv);
+        return $this->submitFeed($feedTypeInfo['name'], $csv);
     }
 
     /**
@@ -285,6 +285,39 @@ class Feeder
         }
 
         return $this->SubmitFeed(FeedType::POST_PRODUCT_DATA['name'], $feed);
+    }
+
+    /**
+     * Sets the shipping status of orders
+     * @param array $data required data
+     * @return array feed submission result
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
+     */
+    public function setDeliveryState(array $data)
+    {
+        $csv = Writer::createFromFileObject(new SplTempFileObject());
+        $csv->setDelimiter("\t");
+
+        //        $header = [
+        //            'order-id',       //亚马逊订单ID
+        //            'order-item-id',  //订单产品id
+        //            'quantity',       //订单产品数量
+        //            'ship-date',      //发货日期
+        //            'carrier-code',   //物流运营商代码
+        //            'carrier-name',   //物流名称
+        //            'tracking-number',//物流单号
+        //        ];
+        $header = array_keys($data[0]);
+        $csv->insertOne($header);
+        foreach ($data as $item) {
+            $csv->insertOne(array_values($item));
+        }
+
+        $feedTypeInfo      = FeedType::POST_FLAT_FILE_FULFILLMENT_DATA;
+        $this->contentType = $feedTypeInfo['contentType'];
+
+        return $this->submitFeed($feedTypeInfo['name'], $csv);
     }
 
 
