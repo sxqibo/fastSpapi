@@ -29,7 +29,7 @@ class Reports extends Client {
   */
   public function getReports($queryParams = [])
   {
-    return $this->send("/reports/2020-09-04/reports", [
+    return $this->send("/reports/2021-06-30/reports", [
       'method' => 'GET',
       'query' => $queryParams,
     ]);
@@ -41,7 +41,7 @@ class Reports extends Client {
   */
   public function createReport($body = [])
   {
-    return $this->send("/reports/2020-09-04/reports", [
+    return $this->send("/reports/2021-06-30/reports", [
       'method' => 'POST',
       'json' => $body
     ]);
@@ -55,7 +55,7 @@ class Reports extends Client {
   */
   public function cancelReport($reportId)
   {
-    return $this->send("/reports/2020-09-04/reports/{$reportId}", [
+    return $this->send("/reports/2021-06-30/reports/{$reportId}", [
       'method' => 'DELETE',
     ]);
   }
@@ -68,7 +68,7 @@ class Reports extends Client {
   */
   public function getReport($reportId)
   {
-    return $this->send("/reports/2020-09-04/reports/{$reportId}", [
+    return $this->send("/reports/2021-06-30/reports/{$reportId}", [
       'method' => 'GET',
     ]);
   }
@@ -82,7 +82,7 @@ class Reports extends Client {
   */
   public function getReportSchedules($queryParams = [])
   {
-    return $this->send("/reports/2020-09-04/schedules", [
+    return $this->send("/reports/2021-06-30/schedules", [
       'method' => 'GET',
       'query' => $queryParams,
     ]);
@@ -94,7 +94,7 @@ class Reports extends Client {
   */
   public function createReportSchedule($body = [])
   {
-    return $this->send("/reports/2020-09-04/schedules", [
+    return $this->send("/reports/2021-06-30/schedules", [
       'method' => 'POST',
       'json' => $body
     ]);
@@ -108,7 +108,7 @@ class Reports extends Client {
   */
   public function cancelReportSchedule($reportScheduleId)
   {
-    return $this->send("/reports/2020-09-04/schedules/{$reportScheduleId}", [
+    return $this->send("/reports/2021-06-30/schedules/{$reportScheduleId}", [
       'method' => 'DELETE',
     ]);
   }
@@ -121,7 +121,7 @@ class Reports extends Client {
   */
   public function getReportSchedule($reportScheduleId)
   {
-    return $this->send("/reports/2020-09-04/schedules/{$reportScheduleId}", [
+    return $this->send("/reports/2021-06-30/schedules/{$reportScheduleId}", [
       'method' => 'GET',
     ]);
   }
@@ -134,7 +134,7 @@ class Reports extends Client {
   */
   public function getReportDocument($reportDocumentId)
   {
-    return $this->send("/reports/2020-09-04/documents/{$reportDocumentId}", [
+    return $this->send("/reports/2021-06-30/documents/{$reportDocumentId}", [
       'method' => 'GET',
     ]);
   }
