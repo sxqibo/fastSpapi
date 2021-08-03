@@ -59,14 +59,14 @@ class Document
         if (isset($payload['compressionAlgorithm']) && $payload['compressionAlgorithm'] == 'GZIP') {
             $downData = gzdecode($downData);
         }
-        $downData = preg_replace('/\s+/S', " ", $downData);
-
+        
         if ($type == 'xml') {
-            $xml  = simplexml_load_string($downData);
-            $json = json_encode($xml);
+            $downData = preg_replace('/\s+/S', " ", $downData);
+            $xml      = simplexml_load_string($downData);
+            $json     = json_encode($xml);
             $downData = json_decode($json, true);
         }
-        
+
         return $downData;
     }
 
