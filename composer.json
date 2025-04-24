@@ -19,7 +19,7 @@
     }
   ],
   "require": {
-    "guzzlehttp/psr7": "^1.7",
+    "guzzlehttp/psr7": "1.9.1",
     "ext-simplexml": "*",
     "ext-json": "*",
     "ext-zlib": "*",
